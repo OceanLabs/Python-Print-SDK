@@ -25,7 +25,7 @@ def example_ordering_module(edited_parameters):
   default_parameters['setting_d'],
   ]
   
-  for i in len(Ledited_parameters):
+  for i in range(0, len(Ledited_parameters)):
     if Ledited_parameter[i] != '':
       Ldefault_parameter[i] = Ledited_parameter[i]
   
