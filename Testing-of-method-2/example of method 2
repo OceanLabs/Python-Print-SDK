@@ -1,7 +1,0 @@
-default_settings = {
-'setting_a' : 'foo',
-'setting_b' : 'bar',
-'setting_c' : 'spam',
-'setting_d' : 'jam'
-}
-
