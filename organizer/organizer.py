@@ -10,7 +10,7 @@ passcode = {"Authorization": "ApiKey {}:{}".format(public_key, secret_key),
 
 class template:
     
-    def __init__(self, passcode)
+    def __init__(self, passcode):
 
         self.blob = r.get(URL, passcode).json()
         cost = self.blob[5]
