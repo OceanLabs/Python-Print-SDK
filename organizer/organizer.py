@@ -1,18 +1,27 @@
-import requests
+import requests as r
+import json
 
-class template(object):
 
-    def __init__(self, other)
+public_key =
+secret_key = 
 
-        blob = json.fetch(URL, passcode)
-        cost = blob[5]
+passcode = {"Authorization": "ApiKey {}:{}".format(public_key, secret_key),
+            "Content-Type": "application/json"}
+
+class template:
+    
+    def __init__(self, passcode)
+
+        self.blob = r.get(URL, passcode).json()
+        cost = self.blob[5]
         #ect.
 
-    def ship_it(self, identifier, yada):
-        
+    def commit(self, identifier, yada):
+        """Allows for commiting single changes to the template"""
+
         self.blob[identifier] = yada
                 
-        json.put(URL, self.blob[identifier], passcode)
+        r.post(URL, self.blob[identifier], passcode)
 
 
 
