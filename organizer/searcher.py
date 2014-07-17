@@ -21,8 +21,23 @@ class searcher:
             if criteria == self.glob[u'objects'][i][u'template_id']:
                 return self.glob[u'objects'][i]
 
+    def cost_finder(self, product_id, cur = 'none'):
+        m = self.id_search(product_id)
+        
+        if cur != 'none':
+            for i in range(0, len(m)):
+                if cur == m[i][u'currency']:
+                    return m[i]
+        
+        else:
+            return m[u'cost']
+        
+
 n = searcher()
 print('\n')
 print(n.name_search('Polaroid minis'))
 print('\n')
-print(n.id_search(u"polaroids"))
+m= n.id_search(u"polaroids")
+print(m)
+print('\n')
+print(n.cost_finder(u"polaroids", cur = u'USD'))
