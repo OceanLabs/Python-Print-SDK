@@ -2,8 +2,8 @@ import requests as r
 import json
 
 
-public_key =
-secret_key = 
+public_key = ''
+secret_key = ''
 
 passcode = {"Authorization": "ApiKey {}:{}".format(public_key, secret_key),
             "Content-Type": "application/json"}
