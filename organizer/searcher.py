@@ -26,9 +26,8 @@ class searcher:
         
         if cur != 'none':
             for i in range(0, len(m)):
-                if cur == m[i][u'currency']:
-                    return m[i]
-        
+                if cur == m[u'cost'][i][u'currency']:
+                    return m[u'cost'][i]
         else:
             return m[u'cost']
         
