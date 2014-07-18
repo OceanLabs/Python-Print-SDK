@@ -148,8 +148,8 @@ class searcher:
                     self.unit_width = o[u'unit_width']
                 else:
                     self.unit_width = m[u'unit_width']
-                    
-                    
+                
+                
         elif product_id == u'polaroids':
             break
         elif product_id == u'default_postcard':
