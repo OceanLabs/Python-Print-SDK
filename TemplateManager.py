@@ -1,51 +1,51 @@
-import requests as r
-import json
+import requests as r # "Requests" handles all .get and .post requests, blame them if anything goes wrong there
+import json # Inbuilt python library that kindly translates everything we get and send into and out of json
 
 
-class searcher:
-    public_key = "7ea493ad22d5930f753cf40e9df9b254bc086a77"
-    secret_key = "a8f99f40c29cc677d1740c322720aa3d9243c43a"
-    URL = 'https://www.kite.ly/v1.1/template/'
-    passcode = {"Authorization": "ApiKey {}:{}".format(public_key, secret_key),
-                "Content-Type": "application/json"}
-    def __init__(self):
-        self.glob = r.get(self.URL, headers=self.passcode).json()
-        print(self.glob)
+class searcher: # Name of class, effectively the whole module is here
+    public_key = ''# Here is the placeholder variables for the public and secret key's to the server
+    secret_key = ''# Used to authorize access to the templates and (hopefully) edits to it as well
+    URL = 'https://www.kite.ly/v1.1/template/'# Web address to the json templates
+    
+    def __init__(self, public_key, secret_key):# __init__ starts the class and loads most varaibles needed in the rest of the program
+        passcode = {"Authorization": "ApiKey {}:{}".format(public_key, secret_key),
+                    "Content-Type": "application/json"}# compiles public and secret key's into this mess which from what I understand allows access to the json templates
+        self.glob = r.get(self.URL, headers=self.passcode).json()# grabs the entire archive on templates and translates it from json, then rightfully titles it "glob"
 
-    def name_search(self, criteria):
-        for i in range(0, len(self.glob[u'objects'])):
-            if criteria == self.glob[u'objects'][i][u'name']:
-                return self.glob[u'objects'][i]
+    def name_search(self, criteria):# allows for searching for individual templates by name. I dunno, it's nice to have but isn't really used.
+        for i in range(0, len(self.glob[u'objects'])):# starts a loop that checks every template in 'objects' from the json glob
+            if criteria == self.glob[u'objects'][i][u'name']:# checks the name of each template against the name given by the user
+                return self.glob[u'objects'][i]# returns the template they asked for (hopefully). keep in mind this only cuts the fat off of the glob, it is still a bloody mess
 
-    def id_search(self, criteria):
-        for i in range(0, len(self.glob[u'objects'])):
-            if criteria == self.glob[u'objects'][i][u'template_id']:
-                return self.glob[u'objects'][i]
+    def id_search(self, criteria):# allows for searching for individual templates by id. This is the definition that did. This is used for pretty much all of the other definitions, please don't delete
+        for i in range(0, len(self.glob[u'objects'])):# goes through all templates in the json glob...
+            if criteria == self.glob[u'objects'][i][u'template_id']:# ...looking for a match to the template_id of the template
+                return self.glob[u'objects'][i]# returns the template they asked for (hopefully). keep in mind this only cuts the fat off of the glob, it is still a bloody mess
 
-    def cost_finder(self, product_id, cur = 'none'):
-        m = self.id_search(product_id)
+    def cost_finder(self, product_id, cur = 'none'):# finds the pricing for the template_id given and accomodates for the fact that the user may want to only be given one of the currencies information
+        m = self.id_search(product_id)# uses the id_search definition to find the template that they are looking for
         
-        if cur != 'none':
-            for i in range(0, len(m)):
-                if cur == m[u'cost'][i][u'currency']:
-                    return m[u'cost'][i]
-        else:
+        if cur != 'none':# if they have preferenced a currency...
+            for i in range(0, len(m)):# ...it begins to look...
+                if cur == m[u'cost'][i][u'currency']:# ...for the currency which they wanted...
+                    return m[u'cost'][i]# ...and then shortens the result to just that currency
+        else:# otherwise they just get the whole lot
             return m[u'cost']
 
-    def data_finder(self, product_id):
-        m = self.id_search(product_id)
-        return m[u'default_content']
+    def data_finder(self, product_id):# returns the default data attributed to the template
+        m = self.id_search(product_id)# this is yet another function that relies on the id_search definition
+        return m[u'default_content'] # not to worry this function isn't used for any other definition
 
-    def override_finder(self, product_id):
-        m = self.id_search(product_id)
-        if m[u'content_overrides'] == 'null':
+    def override_finder(self, product_id):# this finds the overrides for a template
+        m = self.id_search(product_id)# yet again, uses the id_search function to narrow the glob
+        if m[u'content_overrides'] == 'null':# if the template doesn't have any overrides the program prints out a generic reply...
             nothing = 'Nothing has been changed. Template "'+product_id+'" is using default settings.'
-            return nothing
-        else:
+            return nothing# ...and returns it
+        else:# Otherwise it just returns any and all overrides
             return m[u'content_overrides']
 
-    def burp():
-        return self.glob
+    def burp():# not sure what this is, why it's here, or what it's used for...
+        return self.glob# ...but it's here
 
     def edit_thing(self, thing_name, thing_data, product_id):
         product = self.id_search(product_id)
