@@ -5,10 +5,11 @@ import json
 class searcher:
     public_key = "7ea493ad22d5930f753cf40e9df9b254bc086a77"
     secret_key = "a8f99f40c29cc677d1740c322720aa3d9243c43a"
+    URL = 'https://www.kite.ly/v1.1/template/'
+    passcode = {"Authorization": "ApiKey {}:{}".format(public_key, secret_key),
+                "Content-Type": "application/json"}
     def __init__(self):
-        passcode = {"Authorization": "ApiKey {}:{}".format(self.public_key, self.secret_key),
-                    "Content-Type": "application/json"}
-        self.glob = r.get('https://www.kite.ly/v1.1/template/', headers=passcode).json()
+        self.glob = r.get(self.URL, headers=self.passcode).json()
         print(self.glob)
 
     def name_search(self, criteria):
@@ -43,17 +44,17 @@ class searcher:
         else:
             return m[u'content_overrides']
             
-    def edit_thing(thing_name, thing_data, product_id):
+    def edit_thing(self, thing_name, thing_data, product_id):
         product = self.id_search(product_id)
         if product[u'content_overrides'] == "null":
             product[u'content_overrides'] = {}
             product[u'content_overrides'][thing_name] = thing_data
         else:
             product[u'content_overrides'][thing_name] = thing_data
-        for i in range(0, len(self.blob[u'objects'])):
-            if self.blob[u'objects'][i][u'template_id'] == product_id:
-                self.blob[u'objects'][i] = product
-        post(self.blob)
+        for i in range(0, len(self.glob[u'objects'])):
+            if self.glob[u'objects'][i][u'template_id'] == product_id:
+                self.glob[u'objects'][i] = product
+        r.post(self.URL, data=self.glob, headers=self.passcode).json()
 
     def burp():
         return self.glob
@@ -266,23 +267,23 @@ class searcher:
                 self.paragraph_styles = m[u'paragraph_styles']
             else:
                 if u'colors' in o.keys():
-                    self.colors = o.[u'colors']
+                    self.colors = o[u'colors']
                 else:
                     self.colors = o[u'colors']
                 if u'page_height' in o.keys():
-                    self.page_height = o.[u'page_height']
+                    self.page_height = o[u'page_height']
                 else:
                     self.page_height = o[u'page_height']
                 if u'page_width' in o.keys():
-                    self.page_width = o.[u'page_width']
+                    self.page_width = o[u'page_width']
                 else:
                     self.page_width = o[u'page_width']
                 if u'pages' in o.keys():
-                    self.pages = o.[u'pages']
+                    self.pages = o[u'pages']
                 else:
                     self.pages = o[u'pages']
                 if u'paragraph_styles' in o.keys():
-                    self.paragraph_styles = o.[u'paragraph_styles']
+                    self.paragraph_styles = o[u'paragraph_styles']
                 else:
                     self.paragraph_styles = o[u'paragraph_styles']
 
@@ -477,7 +478,7 @@ class searcher:
                     self.unit_width = m[u'unit_width']
                     
                     
-        elif product_id == u'squares_mini'
+        elif product_id == u'squares_mini':
             if forget_override:
                 self.address_code_index = m[u'address_code_index']
                 self.border = m[u'border']
@@ -590,3 +591,6 @@ print(n.data_finder(u'default_postcard'))
 print('\n')
 print(n.override_finder(u'polaroids'))
 print('\n')
+n.edit_thing(u"nx", 5, u"polaroids_mini")
+print("and the overrides are: ", n.override_finder(u"polaroids_mini"))
+print(n.id_search(u"polaroids_mini"))
