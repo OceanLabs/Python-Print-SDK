@@ -43,7 +43,10 @@ class searcher:
             return nothing
         else:
             return m[u'content_overrides']
-            
+
+    def burp():
+        return self.glob
+
     def edit_thing(self, thing_name, thing_data, product_id):
         product = self.id_search(product_id)
         if product[u'content_overrides'] == "null":
@@ -55,9 +58,6 @@ class searcher:
             if self.glob[u'objects'][i][u'template_id'] == product_id:
                 self.glob[u'objects'][i] = product
         r.post(self.URL, data=self.glob, headers=self.passcode).json()
-
-    def burp():
-        return self.glob
 
     def data_cruncher(self, product_id):
         m = self.data_finder(product_id)
@@ -256,7 +256,7 @@ class searcher:
                     self.unit_width = o[u'unit_width']
                 else:
                     self.unit_width = m[u'unit_width']
-                    
+
                     
         elif product_id == u'default_postcard':
             if forget_override:
@@ -381,7 +381,7 @@ class searcher:
                     self.unit_width = o[u'unit_width']
                 else:
                     self.unit_width = m[u'unit_width']
-                    
+
                     
         elif product_id == u'squares':
             if forget_override:
@@ -476,7 +476,7 @@ class searcher:
                     self.unit_width = o[u'unit_width']
                 else:
                     self.unit_width = m[u'unit_width']
-                    
+
                     
         elif product_id == u'squares_mini':
             if forget_override:
@@ -571,7 +571,7 @@ class searcher:
                     self.unit_width = o[u'unit_width']
                 else:
                     self.unit_width = m[u'unit_width']
-                    
+
                     
         else:
             return 'Id "'+product_id+'" is not valid.'
