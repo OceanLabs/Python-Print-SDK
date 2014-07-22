@@ -39,13 +39,13 @@ class Template:
         I dunno, it's nice to have but isn't really used.
         """
         found = False
-        for i in range(0, len(self.glob[u'objects'])):
+        for i in range(0, len(self.glob['objects'])):
             #starts a loop that checks every template in 'objects'
             #from the json glob
-            if criteria == self.glob[u'objects'][i][u'name']:
+            if criteria == self.glob['objects'][i]['name']:
                 #checks the name of each template against the name given
                 #by the user
-                return self.glob[u'objects'][i]#returns the template they asked
+                return self.glob['objects'][i]#returns the template they asked
                                                #for (hopefully).
                                                #keep in mind this only cuts the
                                                #fat off of the glob,
@@ -58,11 +58,11 @@ class Template:
         if not criteria:
             criteria = self.template_id
         found = False
-        for i in range(0, len(self.glob[u'objects'])):
+        for i in range(0, len(self.glob['objects'])):
             #goes through all templates in the json glob...
-            if criteria == self.glob[u'objects'][i][u'template_id']:
+            if criteria == self.glob['objects'][i]['template_id']:
                 #...looking for a match to the template_id of the template
-                return self.glob[u'objects'][i]
+                return self.glob['objects'][i]
             #returns the template they asked for (hopefully).
             #keep in mind this only cuts the fat off of the glob,
             #it is still a bloody mess
@@ -82,12 +82,12 @@ class Template:
         
         if not currency:# if they have preferenced a currency...
             for i in range(0, len(m)):# ...it begins to look...
-                if currency == m[u'cost'][i][u'currency']:# ...for the currency
+                if currency == m['cost'][i]['currency']:# ...for the currency
                                                           #which they wanted...
-                    return m[u'cost'][i]# ...and then shortens the result to
+                    return m['cost'][i]# ...and then shortens the result to
                                         #just that currency
         else:#otherwise they just get the whole lot
-            return m[u'cost']
+            return m['cost']
 
     def data_finder(self):
         """
@@ -95,7 +95,7 @@ class Template:
         """
         m = self.template
         #this is yet another function that relies on the id_search definition
-        return m[u'default_content']
+        return m['default_content']
         #not to worry this function isn't used for any other definition
 
     def override_finder(self):
@@ -103,14 +103,14 @@ class Template:
         This finds the data overrides for a template (if any)
         """
         m = self.template
-        if m[u'content_overrides'] == 'null':# if the template doesn't
+        if m['content_overrides'] == 'null':# if the template doesn't
                                              #have any overrides the program
                                              #prints out a generic reply...
             nothing = ('Nothing has been changed. Template "'+self.template_id+
                        '" is using default settings.')
             return nothing# ...and returns it
         else:#Otherwise it just returns any and all overrides
-            return m[u'content_overrides']
+            return m['content_overrides']
 
     def burp():# not sure what this is, why it's here, or what it's used for...
         return self.glob# ...but it's here
@@ -120,14 +120,14 @@ class Template:
         Allows for the adding of overrides to the default data values
         """
         product = self.id_search(self.template_id)
-        if product[u'content_overrides'] == "null":
-            product[u'content_overrides'] = {}
-            product[u'content_overrides'][thing_name] = thing_data
+        if product['content_overrides'] == "null":
+            product['content_overrides'] = {}
+            product['content_overrides'][thing_name] = thing_data
         else:
-            product[u'content_overrides'][thing_name] = thing_data
-        for i in range(0, len(self.glob[u'objects'])):
-            if self.glob[u'objects'][i][u'template_id'] == self.template_id:
-                self.glob[u'objects'][i] = product
+            product['content_overrides'][thing_name] = thing_data
+        for i in range(0, len(self.glob['objects'])):
+            if self.glob['objects'][i]['template_id'] == self.template_id:
+                self.glob['objects'][i] = product
         requests.post(self.URL, data=self.glob, headers=self.passcode).json()
 
     def data_cruncher(self):
@@ -143,127 +143,127 @@ class Template:
             forget_override = True
         else:
             forget_override = False
-        if self.template_id == u'default_postcard':
+        if self.template_id == 'default_postcard':
             if forget_override:
-                self.colors = m[u'colors']
-                self.page_height = m[u'page_height']
-                self.page_width = m[u'page_width']
-                self.pages = m[u'pages']
-                self.paragraph_styles = m[u'paragraph_styles']
+                self.colors = m['colors']
+                self.page_height = m['page_height']
+                self.page_width = m['page_width']
+                self.pages = m['pages']
+                self.paragraph_styles = m['paragraph_styles']
             else:
-                if u'colors' in o.keys():
-                    self.colors = o[u'colors']
+                if 'colors' in o.keys():
+                    self.colors = o['colors']
                 else:
-                    self.colors = o[u'colors']
-                if u'page_height' in o.keys():
-                    self.page_height = o[u'page_height']
+                    self.colors = m['colors']
+                if 'page_height' in o.keys():
+                    self.page_height = o['page_height']
                 else:
-                    self.page_height = o[u'page_height']
-                if u'page_width' in o.keys():
-                    self.page_width = o[u'page_width']
+                    self.page_height = m['page_height']
+                if 'page_width' in o.keys():
+                    self.page_width = o['page_width']
                 else:
-                    self.page_width = o[u'page_width']
-                if u'pages' in o.keys():
-                    self.pages = o[u'pages']
+                    self.page_width = m['page_width']
+                if 'pages' in o.keys():
+                    self.pages = o['pages']
                 else:
-                    self.pages = o[u'pages']
-                if u'paragraph_styles' in o.keys():
-                    self.paragraph_styles = o[u'paragraph_styles']
+                    self.pages = m['pages']
+                if 'paragraph_styles' in o.keys():
+                    self.paragraph_styles = o['paragraph_styles']
                 else:
-                    self.paragraph_styles = o[u'paragraph_styles']
+                    self.paragraph_styles = m['paragraph_styles']
         else:
             if forget_override:
-                self.address_code_index = m[u'address_code_index']
-                self.border = m[u'border']
-                self.bottom_grip = m[u'bottom_grip']
-                self.colors = m[u'colors']
-                self.group_gutter = m[u'group_gutter']
-                self.groups_x = m[u'groups_x']
-                self.groups_y = m[u'groups_y']
-                self.gutter_bleed = m[u'gutter_bleed']
-                self.image_replacements = m[u'image_replacements']
-                self.is_image_grid = m[u'is_image_grid']
-                self.left_grip = m[u'left_grip']
-                self.nx = m[u'nx']
-                self.ny = m[u'ny']
-                self.pages = m[u'pages']
-                self.paragraph_styles = m[u'paragraph_styles']
-                self.polaroid_grip = m[u'polaroid_grip']
-                self.unit_height = m[u'unit_height']
-                self.unit_width = m[u'unit_width']
+                self.address_code_index = m['address_code_index']
+                self.border = m['border']
+                self.bottom_grip = m['bottom_grip']
+                self.colors = m['colors']
+                self.group_gutter = m['group_gutter']
+                self.groups_x = m['groups_x']
+                self.groups_y = m['groups_y']
+                self.gutter_bleed = m['gutter_bleed']
+                self.image_replacements = m['image_replacements']
+                self.is_image_grid = m['is_image_grid']
+                self.left_grip = m['left_grip']
+                self.nx = m['nx']
+                self.ny = m['ny']
+                self.pages = m['pages']
+                self.paragraph_styles = m['paragraph_styles']
+                self.polaroid_grip = m['polaroid_grip']
+                self.unit_height = m['unit_height']
+                self.unit_width = m['unit_width']
             else:
-                if u'address_code_index' in o.keys():
-                    self.address_code_index = o[u'address_code_index']
+                if 'address_code_index' in o.keys():
+                    self.address_code_index = o['address_code_index']
                 else:
-                    self.address_code_index = m[u'address_code_index']
-                if u'border' in o.keys():
-                    self.border = o[u'border']
+                    self.address_code_index = m['address_code_index']
+                if 'border' in o.keys():
+                    self.border = o['border']
                 else:
-                    self.border = m[u'border']
-                if u'bottom_grip' in o.keys():
-                    self.bottom_grip = o[u'bottom_grip']
+                    self.border = m['border']
+                if 'bottom_grip' in o.keys():
+                    self.bottom_grip = o['bottom_grip']
                 else:
-                    self.bottom_grip = m[u'bottom_grip']
-                if u'colors' in o.keys():
-                    self.colors = o[u'colors']
+                    self.bottom_grip = m['bottom_grip']
+                if 'colors' in o.keys():
+                    self.colors = o['colors']
                 else:
-                    self.colors = m[u'colors']
-                if u'group_gutter' in o.keys():
-                    self.group_gutter = o[u'group_gutter']
+                    self.colors = m['colors']
+                if 'group_gutter' in o.keys():
+                    self.group_gutter = o['group_gutter']
                 else:
-                    self.group_gutter = m[u'group_gutter']
-                if u'groups_x' in o.keys():
-                    self.groups_x = o[u'groups_x']
+                    self.group_gutter = m['group_gutter']
+                if 'groups_x' in o.keys():
+                    self.groups_x = o['groups_x']
                 else:
-                    self.groups_x = m[u'groups_x']
-                if u'groups_y' in o.keys():
-                    self.groups_y = o[u'groups_y']
+                    self.groups_x = m['groups_x']
+                if 'groups_y' in o.keys():
+                    self.groups_y = o['groups_y']
                 else:
-                    self.groups_y = m[u'groups_y']
-                if u'gutter_bleed' in o.keys():
-                    self.gutter_bleed = o[u'gutter_bleed']
+                    self.groups_y = m['groups_y']
+                if 'gutter_bleed' in o.keys():
+                    self.gutter_bleed = o['gutter_bleed']
                 else:
-                    self.gutter_bleed = m[u'gutter_bleed']
-                if u'image_replacements' in o.keys():
-                    self.image_replacements = o[u'image_replacements']
+                    self.gutter_bleed = m['gutter_bleed']
+                if 'image_replacements' in o.keys():
+                    self.image_replacements = o['image_replacements']
                 else:
-                    self.image_replacements = m[u'image_replacements']
-                if u'is_image_grid' in o.keys():
-                    self.is_image_grid = o[u'is_image_grid']
+                    self.image_replacements = m['image_replacements']
+                if 'is_image_grid' in o.keys():
+                    self.is_image_grid = o['is_image_grid']
                 else:
-                    self.is_image_grid = m[u'is_image_grid']
-                if u'left_grip' in o.keys():
-                    self.left_grip = o[u'left_grip']
+                    self.is_image_grid = m['is_image_grid']
+                if 'left_grip' in o.keys():
+                    self.left_grip = o['left_grip']
                 else:
-                    self.left_grip = m[u'left_grip']
-                if u'nx' in o.keys():
-                    self.nx = o[u'nx']
+                    self.left_grip = m['left_grip']
+                if 'nx' in o.keys():
+                    self.nx = o['nx']
                 else:
-                    self.nx = m[u'nx']
-                if u'ny' in o.keys():
-                    self.ny = o[u'ny']
+                    self.nx = m['nx']
+                if 'ny' in o.keys():
+                    self.ny = o['ny']
                 else:
-                    self.ny = m[u'ny']
-                if u'pages' in o.keys():
-                    self.pages = o[u'pages']
+                    self.ny = m['ny']
+                if 'pages' in o.keys():
+                    self.pages = o['pages']
                 else:
-                    self.pages = m[u'pages']
-                if u'paragraph_styles' in o.keys():
-                    self.paragraph_styles = o[u'paragraph_styles']
+                    self.pages = m['pages']
+                if 'paragraph_styles' in o.keys():
+                    self.paragraph_styles = o['paragraph_styles']
                 else:
-                    self.paragraph_styles = m[u'paragraph_styles']
-                if u'polarpoid_grip' in o.keys():
-                    self.polarpoid_grip = o[u'polarpoid_grip']
+                    self.paragraph_styles = m['paragraph_styles']
+                if 'polarpoid_grip' in o.keys():
+                    self.polarpoid_grip = o['polarpoid_grip']
                 else:
-                    self.polarpoid_grip = m[u'polarpoid_grip']
-                if u'unit_height' in o.keys():
-                    self.unit_height = o[u'unit_height']
+                    self.polarpoid_grip = m['polarpoid_grip']
+                if 'unit_height' in o.keys():
+                    self.unit_height = o['unit_height']
                 else:
-                    self.unit_height = m[u'unit_height']
-                if u'unit_width' in o.keys():
-                    self.unit_width = o[u'unit_width']
+                    self.unit_height = m['unit_height']
+                if 'unit_width' in o.keys():
+                    self.unit_width = o['unit_width']
                 else:
-                    self.unit_width = m[u'unit_width']
+                    self.unit_width = m['unit_width']
 
                 
 if __name__ == "__main__":
