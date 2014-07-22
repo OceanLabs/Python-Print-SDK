@@ -1,32 +1,33 @@
 import requests
-#"Requests" handles all .get and .post requests,
-#blame them if anything goes wrong there
+# "Requests" handles all .get and .post requests, blame them if anything
+# goes wrong there.
 
 import json
-#Inbuilt python library that kindly translates
-#everything we get and send into and out of json
+# Inbuilt python library that kindly translates everything we get and
+# send into and out of json.
 
 class Template(object):
     public_key = ''
-    #Here is the placeholder variables for the public and secret key's...
-    #...to the server
+    # Here is the placeholder variables for the public and secret key's
+    # to the server.
     secret_key = ''
-    #Used to authorize access to the templates...
-    #...and (hopefully) edits to it as well
+    # Used to authorize access to the templates and (hopefully) edits to
+    # it as well.
     URL = 'https://www.kite.ly/v1.1/template/'
-    #Web address to the json templates
+    # Web address to the json templates.
     
     def __init__(self, template_id, public_key, secret_key):
-        #__init__ starts the class and loads most varaibles
-        #needed in the rest of the program
-        self.passcode = {"Authorization": "ApiKey {}:{}".format(public_key,
-                                                           secret_key),
-                    "Content-Type": "application/json"}
-        #compiles public and secret key's into this mess
-        #which from what I understand allows access to the json templates
+        # __init__ starts the class and loads most varaibles needed in
+        # the rest of the program.
+        self.passcode = {
+            "Authorization": "ApiKey {}:{}".format(public_key, secret_key),
+            "Content-Type": "application/json"
+        }
+        # Compiles public and secret key's into this mess which from
+        # what I understand allows access to the json templates.
         self.glob = requests.get(self.URL, headers=self.passcode).json()
-        #grabs the entire archive on templates and translates it from json,
-        #then rightfully titles it "glob"
+        # Grabs the entire archive on templates and translates it from
+        # json, then rightfully titles it "glob".
         self.template_id = template_id
         self.template = self.id_search(template_id)
         if type(self.template) is not str:
@@ -39,16 +40,15 @@ class Template(object):
         """
         found = False
         for i in range(0, len(self.glob['objects'])):
-            #starts a loop that checks every template in 'objects'
-            #from the json glob
+            # Starts a loop that checks every template in 'objects' from
+            # the json glob.
             if criteria == self.glob['objects'][i]['name']:
-                #checks the name of each template against the name given
-                #by the user
-                return self.glob['objects'][i]#returns the template they asked
-                                               #for (hopefully).
-                                               #keep in mind this only cuts the
-                                               #fat off of the glob,
-                                               #but it is still a bloody mess
+                # Checks the name of each template against the name
+                # given by the user.
+                return self.glob['objects'][i]
+                # Returns the template they asked for (hopefully), keep
+                # in mind this only cuts the fat off of the glob, but it
+                # is still a bloody mess.
         
     def id_search(self, criteria=None):
         """
@@ -58,13 +58,14 @@ class Template(object):
             criteria = self.template_id
         found = False
         for i in range(0, len(self.glob['objects'])):
-            #goes through all templates in the json glob...
+            # Goes through all templates in the json glob...
             if criteria == self.glob['objects'][i]['template_id']:
-                #...looking for a match to the template_id of the template
+                # ...looking for a match to the template_id of the
+                # template.
                 return self.glob['objects'][i]
-            #returns the template they asked for (hopefully).
-            #keep in mind this only cuts the fat off of the glob,
-            #it is still a bloody mess
+                # Returns the template they asked for (hopefully), keep
+                # in mind this only cuts the fat off of the glob, but it
+                # is still a bloody mess.
                 found = True
         if not found:
             error = 'Template "'+self.template+'" does not exsist.'
@@ -79,40 +80,39 @@ class Template(object):
         """
         m = self.template        
         
-        if not currency:# if they have preferenced a currency...
-            for i in range(0, len(m)):# ...it begins to look...
-                if currency == m['cost'][i]['currency']:# ...for the currency
-                                                          #which they wanted...
-                    return m['cost'][i]# ...and then shortens the result to
-                                        #just that currency
-        else:#otherwise they just get the whole lot
+        if not currency:
+            # If they have preferenced a currency...
+            for i in range(0, len(m)):
+                # ...it begins to look...
+                if currency == m['cost'][i]['currency']:
+                    # ...for the currency which they wanted...
+                    return m['cost'][i]
+                    # ...and then shortens the result to just that
+                    # currency.
+        else:
             return m['cost']
+            # Otherwise they just get the whole lot.
 
     def data_finder(self):
         """
         Returns the default data attributed to the template
         """
         m = self.template
-        #this is yet another function that relies on the id_search definition
         return m['default_content']
-        #not to worry this function isn't used for any other definition
 
     def override_finder(self):
         """
         This finds the data overrides for a template (if any)
         """
         m = self.template
-        if m['content_overrides'] == 'null':# if the template doesn't
-                                             #have any overrides the program
-                                             #prints out a generic reply...
+        if m['content_overrides'] == 'null':
+            # If the template doesn't have any overrides the program
+            # prints out a generic reply...
             nothing = ('Nothing has been changed. Template "'+self.template_id+
                        '" is using default settings.')
             return nothing# ...and returns it
         else:#Otherwise it just returns any and all overrides
             return m['content_overrides']
-
-    def burp():# not sure what this is, why it's here, or what it's used for...
-        return self.glob# ...but it's here
 
     def edit_thing(self, thing_name, thing_data):
         """
