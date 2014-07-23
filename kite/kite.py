@@ -28,62 +28,22 @@ class Template(object):
         }
         # Compiles public and secret key's into this mess which from
         # what I understand allows access to the json templates.
+        self.URL = self.URL + template_id + '/'
         self.glob = requests.get(self.URL, headers=self.passcode).json()
         # Grabs the entire archive on templates and translates it from
         # json, then rightfully titles it "glob".
         self.template_id = template_id
-        self.template = self.id_search(template_id)
         if type(self.template) is not str:
-            self._from_json()
+            self._from_json(self.glob)
         self.supported_currencies = []
         for i in range(0, len(self.template['cost'])):
             currency = self.template['cost'][i]['currency']
             self.supported_currencies.append(currency)
-
-    def name_search(self, criteria):
-        """
-        Allows for searching for individual templates by name.
-        I dunno, it's nice to have but isn't really used.
-        """
-        found = False
-        for i in range(0, len(self.glob['objects'])):
-            # Starts a loop that checks every template in 'objects' from
-            # the json glob.
-            if criteria == self.glob['objects'][i]['name']:
-                # Checks the name of each template against the name
-                # given by the user.
-                return self.glob['objects'][i]
-                # Returns the template they asked for (hopefully), keep
-                # in mind this only cuts the fat off of the glob, but it
-                # is still a bloody mess.
-        
-    def id_search(self, criteria=None):
-        """
-        Allows for searching for individual templates by template_id.
-        """
-        if not criteria:
-            criteria = self.template_id
-        found = False
-        for i in range(0, len(self.glob['objects'])):
-            # Goes through all templates in the json glob...
-            if criteria == self.glob['objects'][i]['template_id']:
-                # ...looking for a match to the template_id of the
-                # template.
-                return self.glob['objects'][i]
-                # Returns the template they asked for (hopefully), keep
-                # in mind this only cuts the fat off of the glob, but it
-                # is still a bloody mess.
-                found = True
-        if not found:
-            error = 'Template "'+self.template+'" does not exsist.'
-            result = "No information availible."
-            not_found_message = error + '\n' + result
-            return not_found_message
         
     def get_cost(self, currency=None):
         """
         Finds the information relating to the cost of the product.
-        Will give all currencies if not specified.
+        Will default to GBP if not specified.
         """
         m = self.template        
         
@@ -93,13 +53,13 @@ class Template(object):
                 # ...it begins to look...
                 if currency == m['cost'][i]['currency']:
                     # ...for the currency which they wanted...
-                    return m['cost'][i]
+                    return m['cost'][i]['amount']
                     # ...and then shortens the result to just that
                     # currency.
         else:
             for j in range(0, len(m['cost'])):
                 if m['cost'][j]['currency'] == 'GBP':
-                    return m['cost'][j]
+                    return m['cost'][j]['amount']
             # Otherwise they just get the whole lot.
 
     def get_defaults(self):
@@ -136,15 +96,43 @@ class Template(object):
         else:
             product['content_overrides'][content_name] = content_value
         self.template = product
+        self._from_json()
 
     def _to_json(self):
         """
         Updates self.glob with the current state of the template.
         Does this automatically when you run commit.
         """
-        for i in range(0, len(self.glob['objects'])):
-            if self.glob['objects'][i]['template_id'] == self.template_id:
-                self.glob['objects'][i] = self.template
+        if self.template_id == 'default_postcard':
+            to_be_sent = {
+                'colors': self.colors,
+                'page_height': self.page_height,
+                'page_width': self.page_width,
+                'pages': self.pages,
+                'paragraph_styles': self.paragraph_styles
+                }
+        else:
+            to_be_sent = {
+                'address_code_index': self.address_code_index,
+                'border': self.border,
+                'bottom_grip': self.bottom_grip,
+                'colors': self.colors,
+                'group_gutter': self.group_gutter,
+                'groups_x': self.groups_x,
+                'groups_y': self.groups_y,
+                'gutter_bleed': self.gutter_bleed,
+                'image_replacements': self.image_replacements,
+                'is_image_grid': self.is_image_grid,
+                'left_grip': self.left_grip,
+                'nx': self.nx,
+                'ny': self.ny,
+                'pages': self.pages,
+                'paragraph_styles': self.paragraph_styles,
+                'polaroid_grip': self.polaroid_grip,
+                'unit_height': self.unit_height,
+                'unit_width': self.unit_width
+                }
+        self.glob['content_overrides'] = to_be_sent
     
     def commit(self):
         """
@@ -153,18 +141,18 @@ class Template(object):
         self._to_json()
         # Puts the template (assuming it has been edited) back into
         # self.glob for posting (effectively updating self.glob).
-        requests.post(self.URL, data=self.glob, headers=self.passcode).json()
+        requests.put(self.URL, data=self.glob, headers=self.passcode).json()
 
-    def _from_json(self):
+    def _from_json(self, template):
         """
         Translates mass data sent to the program into single variables
         with the same name as they were given in the json format.
         This is run automatically on class initiallation.
         """
-        m = self.get_defaults()
-        o = self.get_overrides()
+        m = template['default_content']
+        o = template['content_overrides']
         
-        if o[0:7] == "Nothing":
+        if o == "null":
             forget_override = True
         else:
             forget_override = False
