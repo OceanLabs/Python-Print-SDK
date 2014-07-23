@@ -73,7 +73,7 @@ class Template(object):
             not_found_message = error + '\n' + result
             return not_found_message
         
-    def cost_finder(self, currency = None):
+    def cost_finder(self, currency=None):
         """
         Finds the information relating to the cost of the product.
         Will give all currencies if not specified.
@@ -110,8 +110,10 @@ class Template(object):
             # prints out a generic reply...
             nothing = ('Nothing has been changed. Template "'+self.template_id+
                        '" is using default settings.')
-            return nothing# ...and returns it
-        else:#Otherwise it just returns any and all overrides
+            return nothing
+            # ...and returns it.
+        else:
+            # Otherwise it just returns any and all overrides.
             return m['content_overrides']
 
     def edit_thing(self, thing_name, thing_data):
