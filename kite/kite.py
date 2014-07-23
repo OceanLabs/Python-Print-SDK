@@ -6,6 +6,9 @@ import json
 # Inbuilt python library that kindly translates everything we get and
 # send into and out of json.
 
+import os
+from random import shuffle
+
 class Template(object):
     public_key = ''
     # Here is the placeholder variables for the public and secret key's
@@ -31,7 +34,11 @@ class Template(object):
         self.template_id = template_id
         self.template = self.id_search(template_id)
         if type(self.template) is not str:
-            self.data_cruncher()
+            self._from_json()
+        self.supported_currencies = []
+        for i in range(0, len(self.template['cost'])):
+            currency = self.template['cost'][i]['currency']
+            self.supported_currencies.append(currency)
 
     def name_search(self, criteria):
         """
@@ -73,16 +80,16 @@ class Template(object):
             not_found_message = error + '\n' + result
             return not_found_message
         
-    def cost_finder(self, currency=None):
+    def get_cost(self, currency=None):
         """
         Finds the information relating to the cost of the product.
         Will give all currencies if not specified.
         """
         m = self.template        
         
-        if not currency:
+        if currency != None:
             # If they have preferenced a currency...
-            for i in range(0, len(m)):
+            for i in range(0, len(m['cost'])):
                 # ...it begins to look...
                 if currency == m['cost'][i]['currency']:
                     # ...for the currency which they wanted...
@@ -90,17 +97,19 @@ class Template(object):
                     # ...and then shortens the result to just that
                     # currency.
         else:
-            return m['cost']
+            for j in range(0, len(m['cost'])):
+                if m['cost'][j]['currency'] == 'GBP':
+                    return m['cost'][j]
             # Otherwise they just get the whole lot.
 
-    def data_finder(self):
+    def get_defaults(self):
         """
         Returns the default data attributed to the template
         """
         m = self.template
         return m['default_content']
 
-    def override_finder(self):
+    def get_overrides(self):
         """
         This finds the data overrides for a template (if any)
         """
@@ -116,29 +125,44 @@ class Template(object):
             # Otherwise it just returns any and all overrides.
             return m['content_overrides']
 
-    def edit_thing(self, thing_name, thing_data):
+    def edit(self, content_name, content_value):
         """
-        Allows for the adding of overrides to the default data values
+        Allows for the editing of the current template
         """
-        product = self.id_search(self.template_id)
+        product = self.template
         if product['content_overrides'] == "null":
             product['content_overrides'] = {}
-            product['content_overrides'][thing_name] = thing_data
+            product['content_overrides'][content_name] = content_value
         else:
-            product['content_overrides'][thing_name] = thing_data
+            product['content_overrides'][content_name] = content_value
+        self.template = product
+
+    def _to_json(self):
+        """
+        Updates self.glob with the current state of the template.
+        Does this automatically when you run commit.
+        """
         for i in range(0, len(self.glob['objects'])):
             if self.glob['objects'][i]['template_id'] == self.template_id:
-                self.glob['objects'][i] = product
+                self.glob['objects'][i] = self.template
+    
+    def commit(self):
+        """
+        Post's the current template in its current state to the server
+        """
+        self._to_json()
+        # Puts the template (assuming it has been edited) back into
+        # self.glob for posting (effectively updating self.glob).
         requests.post(self.URL, data=self.glob, headers=self.passcode).json()
 
-    def data_cruncher(self):
+    def _from_json(self):
         """
         Translates mass data sent to the program into single variables
         with the same name as they were given in the json format.
         This is run automatically on class initiallation.
         """
-        m = self.data_finder()
-        o = self.override_finder()
+        m = self.get_defaults()
+        o = self.get_overrides()
         
         if o[0:7] == "Nothing":
             forget_override = True
@@ -265,3 +289,112 @@ class Template(object):
                     self.unit_width = o['unit_width']
                 else:
                     self.unit_width = m['unit_width']
+
+class PrintOrder(object):
+
+    default_shipping_address = {
+        "recipient_name": "Bilbo Baggins",
+        "address_line_1": "Bag End",
+        "address_line_2": "",
+        "city": "Hobbiton",
+        "county_state": "The Shire",
+        "country_code": "GBR"
+        }
+
+    def __init__(self, staging=False):
+        if staging:
+            self.base_url = "http://staging.kite.ly/v1.1/"
+        else:
+            self.base_url = "https://www.kite.ly/v1.1/"
+        self.assets = []
+
+    def set_credentials(self, public_key, secret_key):
+        self.public_key = public_key
+        self.secret_key = secret_key
+
+    def upload_files(self, files, asset_descriptions=None, client_asset=None):
+        print
+        print "Registering %s files" % len(files)
+        print
+        mime_types = ",".join(f['content_type'] for f in files)
+        signing_response = self._get_request("asset/sign/?mime_types=%s" % mime_types, params={})
+        print "Got signing response from Kite"
+        print
+        for i, f in enumerate(files):
+            d = open(f['filepath'])
+            print "uploading image %s / %s (%s)" % (i + 1, len(files), f['filepath'])
+            requests.put(
+                url=signing_response['signed_requests'][i],
+                headers={"x-amz-acl": "private", "Content-Type": f['content_type']},
+                data=d
+                )
+            d.close()
+            asset_id = signing_response['asset_ids'][i]
+            if f.get('crop_instructions', None):
+                print 'CROPPING: resource_uri": "/v1.1/asset/%d/' % asset_id
+                data = {"objects": [{
+                    "resource_uri": "/v1.1/asset/%d/" % asset_id,
+                    "crop_x": f.get('crop_instructions')['x'],
+                    "crop_y": f.get('crop_instructions')['y'],
+                    "crop_width": f.get('crop_instructions')['width'],
+                    "crop_height": f.get('crop_instructions')['height']
+                }]}
+                res = requests.patch(
+                    os.path.join(self.base_url, 'asset/'),
+                    data=json.dumps(data),
+                    headers=self._headers)
+                print res.status_code
+                print res.content
+            self.assets.append(asset_id)
+        return self.assets
+
+    def register_remote_asset(self, url):
+        res = self._post_request('asset/', data=json.dumps({'url': url}))
+        asset_id = res['asset_id']
+        self.assets.append(asset_id)
+        return asset_id
+
+    def submit(self, shipping_address=None, user_data=None):
+        print
+        print "Submitting order..."
+        if not shipping_address:
+            shipping_address = self.default_shipping_address
+        if not user_data:
+            user_data = {}
+        responses = []
+        for template_id in self.templates:
+            jobs = [self._job_factory(template_id, self.assets)]
+            if type(jobs) != list:
+                jobs = [jobs]
+            data = {"jobs": jobs, "shipping_address": shipping_address}
+            res = self._post_request("print/", data=json.dumps(data))
+            print res
+            responses.append(res)
+        return responses
+
+    def address_search(self, address_data):
+        return self._get_request("address/search/", params=address_data)
+
+    @staticmethod
+    def _job_factory(template_id, assets):
+        return {
+            'template_id': template_id,
+            'assets': assets,
+        }
+
+    @property
+    def _headers(self):
+        return {
+            "Authorization": "ApiKey {}:{}".format(self.public_key, self.secret_key),
+            "Content-Type": "application/json",
+        }
+
+    def _get_request(self, url, params=None):
+        url = os.path.join(self.base_url, url)
+        r = requests.get(url, headers=self._headers)
+        return r.json()
+
+    def _post_request(self, url, data):
+        url = os.path.join(self.base_url, url)
+        r = requests.post(url, data=data, headers=self._headers)
+        return r.json()
