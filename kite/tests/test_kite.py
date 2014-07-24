@@ -15,8 +15,15 @@ class TestTemplate(unittest.TestCase):
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
     def test_get_cost_given_polaroids_mini(self):
-        tests = [['USD', 'EUR', 'GBP', 'JPY'],
-                 ['7.00', '5.00', '4.00', "Currency is not supported."]]
+        tests = [
+            [
+                'USD', 'EUR', 'GBP', 'JPY', '', None
+                ],
+            [
+                '7.00', '5.00', '4.00', "Currency is not supported.",
+                "Currency is not supported.", '4.00'
+                ]
+            ]
         template = Template("polaroids_mini", self.public_key, self.secret_key)
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
@@ -26,8 +33,15 @@ class TestTemplate(unittest.TestCase):
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
     def test_get_cost_given_polaroids(self):
-        tests = [['USD', 'EUR', 'GBP', 'JPY'],
-                 ['7.00', '5.00', '4.00', "Currency is not supported."]]
+        tests = [
+            [
+                'USD', 'EUR', 'GBP', 'JPY', '', None
+                ],
+            [
+                '7.00', '5.00', '4.00', "Currency is not supported.",
+                "Currency is not supported.", '4.00'
+                ]
+            ]
         template = Template("polaroids", self.public_key, self.secret_key)
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
@@ -37,8 +51,15 @@ class TestTemplate(unittest.TestCase):
         cost = template.get_cost()
         self.assertEquals(cost, '1.49')
     def test_get_cost_given_default_postcard(self):
-        tests = [['USD', 'EUR', 'GBP', 'JPY'],
-                 ['2.49', '1.99', '1.49', "Currency is not supported."]]
+        tests = [
+            [
+                'USD', 'EUR', 'GBP', 'JPY', '', None
+                ],
+            [
+                '2.49', '1.99', '1.49', "Currency is not supported.",
+                "Currency is not supported.", '1.49'
+                ]
+            ]
         template = Template("default_postcard", self.public_key, self.secret_key)
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
@@ -48,8 +69,15 @@ class TestTemplate(unittest.TestCase):
         cost = template.get_cost()
         self.assertEquals(cost, '12.50')
     def test_get_cost_given_magnets(self):
-        tests = [['USD', 'EUR', 'GBP', 'JPY'],
-                 ['14.00', '10.00', '12.50', "Currency is not supported."]]
+        tests = [
+            [
+                'USD', 'EUR', 'GBP', 'JPY', '', None
+                ],
+            [
+                '14.00', '10.00', '12.50', "Currency is not supported.",
+                "Currency is not supported.", '12.50'
+                ]
+            ]
         template = Template("magnets", self.public_key, self.secret_key)
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
@@ -59,8 +87,15 @@ class TestTemplate(unittest.TestCase):
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
     def test_get_cost_given_squares(self):
-        tests = [['USD', 'EUR', 'GBP', 'JPY'],
-                 ['7.00', '5.00', '4.00', "Currency is not supported."]]
+        tests = [
+            [
+                'USD', 'EUR', 'GBP', 'JPY', '', None
+                ],
+            [
+                '7.00', '5.00', '4.00', "Currency is not supported.",
+                "Currency is not supported.", '4.00'
+                ]
+            ]
         template = Template("squares", self.public_key, self.secret_key)
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
@@ -70,8 +105,15 @@ class TestTemplate(unittest.TestCase):
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
     def test_get_cost_given_squares_mini(self):
-        tests = [['USD', 'EUR', 'GBP', 'JPY'],
-                 ['7.00', '5.00', '4.00', "Currency is not supported."]]
+        tests = [
+            [
+                'USD', 'EUR', 'GBP', 'JPY', '', None
+                ],
+            [
+                '7.00', '5.00', '4.00', "Currency is not supported.",
+                "Currency is not supported.", '4.00'
+                ]
+            ]
         template = Template("squares_mini", self.public_key, self.secret_key)
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
@@ -329,20 +371,13 @@ class TestTemplate(unittest.TestCase):
         template = Template("magnets", self.public_key, self.secret_key)
         defaults = template.get_defaults()
         self.assertEquals(defaults, {
-            "address_code_index": 20,
-            "border": 9.9216,
-            "bottom_grip": 28.3464567,
-            "colors": [],
-            "group_gutter": 0,
-            "groups_x": 1,
-            "groups_y": 1,
-            "gutter_bleed": 8.50393701,
-            "image_replacements": {},
-            "is_image_grid": True,
-            "left_grip": 14.173228,
-            "nx": 4,
-            "ny": 6,
-            "pages": [
+            "address_code_index": 20, "border": 9.9216,
+            "bottom_grip": 28.3464567, "colors": [],
+            "group_gutter": 0, "groups_x": 1,
+            "groups_y": 1, "gutter_bleed": 8.50393701,
+            "image_replacements": {}, "is_image_grid": True,
+            "left_grip": 14.173228, "nx": 4,
+            "ny": 6, "pages": [
                 {
                     "frames": [],
                     "images": [],
@@ -350,10 +385,44 @@ class TestTemplate(unittest.TestCase):
                     "strings": []
                     }
                 ],
-            "paragraph_styles": [],
-            "polaroid_grip": 0,
-            "unit_height": 175.74803154,
-            "unit_width": 175.74803154
+            "paragraph_styles": [], "polaroid_grip": 0,
+            "unit_height": 175.74803154, "unit_width": 175.74803154
+            })
+    def test_get_defaults_squares(self):
+        template = Template("squares", self.public_key, self.secret_key)
+        defaults = template.get_defaults()
+        self.assertEquals(defaults, {
+            "address_code_index": 9, "border": 9.9216,
+            "bottom_grip": 28.3464567, "colors": [],
+            "group_gutter": 0, "groups_x": 1,
+            "groups_y": 1, "gutter_bleed": 8.50393701,
+            "image_replacements": {}, "is_image_grid": True,
+            "left_grip": 14.173228, "nx": 3,
+            "ny": 4, "pages": [
+                {
+                    "frames": [], "images": [], "name": "second", "strings": []
+                    }
+                ],
+            "paragraph_styles": [], "polaroid_grip": 0,
+            "unit_height": 256.535433071, "unit_width": 256.535433071
+            })
+    def test_get_defaults_squares_mini(self):
+        template = Template("squares_mini", self.public_key, self.secret_key)
+        defaults = template.get_defaults()
+        self.assertEquals(defaults, {
+            "address_code_index": 20, "border": 9.9216,
+            "bottom_grip": 28.3464567, "colors": [],
+            "group_gutter": 0, "groups_x": 1,
+            "groups_y": 1, "gutter_bleed": 8.50393701,
+            "image_replacements": {}, "is_image_grid": True,
+            "left_grip": 14.173228, "nx": 4,
+            "ny": 6, "pages": [
+                {
+                    "frames": [], "images": [], "name": "second", "strings": []
+                    }
+                ],
+            "paragraph_styles": [], "polaroid_grip": 0,
+            "unit_height": 172.913385827, "unit_width": 172.913385827
             })
 
 if __name__ == '__main__':
