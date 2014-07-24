@@ -33,11 +33,11 @@ class Template(object):
         # Grabs the entire archive on templates and translates it from
         # json, then rightfully titles it "glob".
         self.template_id = template_id
-        if type(self.template) is not str:
+        if type(self.glob) is not str:
             self._from_json(self.glob)
         self.supported_currencies = []
-        for i in range(0, len(self.template['cost'])):
-            currency = self.template['cost'][i]['currency']
+        for i in range(0, len(self.glob['cost'])):
+            currency = self.glob['cost'][i]['currency']
             self.supported_currencies.append(currency)
         
     def get_cost(self, currency=None):
@@ -45,7 +45,7 @@ class Template(object):
         Finds the information relating to the cost of the product.
         Will default to GBP if not specified.
         """
-        m = self.template        
+        m = self.glob        
         
         if currency != None:
             # If they have preferenced a currency...
@@ -66,14 +66,14 @@ class Template(object):
         """
         Returns the default data attributed to the template
         """
-        m = self.template
+        m = self.glob
         return m['default_content']
 
     def get_overrides(self):
         """
         This finds the data overrides for a template (if any)
         """
-        m = self.template
+        m = self.glob
         if m['content_overrides'] == 'null':
             # If the template doesn't have any overrides the program
             # prints out a generic reply...
@@ -84,19 +84,6 @@ class Template(object):
         else:
             # Otherwise it just returns any and all overrides.
             return m['content_overrides']
-
-    def edit(self, content_name, content_value):
-        """
-        Allows for the editing of the current template
-        """
-        product = self.template
-        if product['content_overrides'] == "null":
-            product['content_overrides'] = {}
-            product['content_overrides'][content_name] = content_value
-        else:
-            product['content_overrides'][content_name] = content_value
-        self.template = product
-        self._from_json()
 
     def _to_json(self):
         """
