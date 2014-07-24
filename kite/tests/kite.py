@@ -49,13 +49,17 @@ class Template(object):
         
         if currency != None:
             # If they have preferenced a currency...
+            found = False
             for i in range(0, len(m['cost'])):
                 # ...it begins to look...
                 if currency == m['cost'][i]['currency']:
                     # ...for the currency which they wanted...
+                    found = True
                     return m['cost'][i]['amount']
                     # ...and then shortens the result to just that
                     # currency.
+            if not found:
+                return "Currency is not supported."
         else:
             for j in range(0, len(m['cost'])):
                 if m['cost'][j]['currency'] == 'GBP':
