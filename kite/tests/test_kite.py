@@ -425,5 +425,107 @@ class TestTemplate(unittest.TestCase):
             "unit_height": 172.913385827, "unit_width": 172.913385827
             })
 
+    def test_to_json(self):
+        edit = Template('polaroids_mini', self.public_key, self.secret_key)
+        edit.address_code_index = 21
+        edit.border = 12.3454321
+        edit.bottom_grip = 30.3464567
+        edit.colors = [
+                {"name": "BLACK", "value": "#1a1919"},
+                {"name": "NAVY", "value": "#000F55"}
+                ]
+        edit.group_gutter = 1
+        edit.groups_x = 2
+        edit.groups_y = 2
+        edit.gutter_bleed = 10.40393702
+        edit.image_replacements = {'image1': 3, 'image2': 5}
+        edit.is_image_grid = False
+        edit.left_grip = 12.125448
+        edit.nx = 5
+        edit.ny = 5
+        edit.pages = [{
+                "frames": [4, 3, 2, 1, 0], "images": [21, 4],
+                "name": "first", "strings": ['Good', 'Job']
+                }, {
+                "frames": [9, 8, 7, 6, 5], "images": [22, 6],
+                "name": "second", "strings": ['Well', 'Done']
+                }]
+        edit.paragraph_styles = [
+                {
+                    "align": "left",
+                    "font_color": "#000F55",
+                    "font_id": "8",
+                    "font_size": 9,
+                    "leading": 20,
+                    "name": "body"
+                    },
+                {
+                    "align": "center",
+                    "font_color": "#000F55",
+                    "font_id": "8",
+                    "font_size": 9,
+                    "leading": 9,
+                    "name": "body-centered"
+                    }
+                ]
+        edit.polaroid_grip = 20.53316536
+        edit.unit_height = 150.1314161621
+        edit.unit_width = 181.354331
+        edit._to_json()
+        overrides = edit.get_overrides()
+        self.assertEquals(overrides, {
+                'address_code_index': 21,
+                'border': 12.3454321,
+                'bottom_grip': 30.3464567,
+                'colors': [
+                    {
+                        "name": "BLACK", "value": "#1a1919"
+                        },
+                    {
+                        "name": "NAVY", "value": "#000F55"
+                        }
+                    ],
+                'group_gutter': 1,
+                'groups_x': 2,
+                'groups_y': 2,
+                'gutter_bleed': 10.40393702,
+                'image_replacements': {'image1': 3, 'image2': 5},
+                'is_image_grid': False,
+                'left_grip': 12.125448,
+                'nx': 5,
+                'ny': 5,
+                'pages': [
+                    {
+                        "frames": [4, 3, 2, 1, 0], "images": [21, 4],
+                        "name": "first", "strings": ['Good', 'Job']
+                        },
+                    {
+                        "frames": [9, 8, 7, 6, 5], "images": [22, 6],
+                        "name": "second", "strings": ['Well', 'Done']
+                        }
+                    ],
+                'paragraph_styles': [
+                    {
+                        "align": "left",
+                        "font_color": "#000F55",
+                        "font_id": "8",
+                        "font_size": 9,
+                        "leading": 20,
+                        "name": "body"
+                        },
+                    {
+                        "align": "center",
+                        "font_color": "#000F55",
+                        "font_id": "8",
+                        "font_size": 9,
+                        "leading": 9,
+                        "name": "body-centered"
+                        }
+                    ],
+                'polaroid_grip': 20.53316536,
+                'unit_height': 150.1314161621,
+                'unit_width': 181.354331
+                })
+
 if __name__ == '__main__':
     unittest.main()
