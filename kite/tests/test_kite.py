@@ -427,6 +427,8 @@ class TestTemplate(unittest.TestCase):
 
     def test_to_json(self):
         edit = Template('polaroids_mini', self.public_key, self.secret_key)
+        self.assertEquals(edit.get_overrides(),
+                     'Nothing has been changed. Template "polaroids_mini" is using default settings.')
         edit.address_code_index = 21
         edit.border = 12.3454321
         edit.bottom_grip = 30.3464567

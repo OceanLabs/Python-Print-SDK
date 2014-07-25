@@ -49,13 +49,17 @@ class Template(object):
         
         if currency != None:
             # If they have preferenced a currency...
+            found = False
             for i in range(0, len(m['cost'])):
                 # ...it begins to look...
                 if currency == m['cost'][i]['currency']:
                     # ...for the currency which they wanted...
+                    found = True
                     return m['cost'][i]['amount']
                     # ...and then shortens the result to just that
                     # currency.
+            if not found:
+                return "Currency is not supported."
         else:
             for j in range(0, len(m['cost'])):
                 if m['cost'][j]['currency'] == 'GBP':
@@ -67,7 +71,7 @@ class Template(object):
         Returns the default data attributed to the template
         """
         m = self.glob
-        return m['default_content']
+        return m['content']
 
     def get_overrides(self):
         """
@@ -136,7 +140,7 @@ class Template(object):
         with the same name as they were given in the json format.
         This is run automatically on class initiallation.
         """
-        m = template['default_content']
+        m = template['content']
         o = template['content_overrides']
         
         if o == "null":
