@@ -10,10 +10,6 @@ class TestTemplate(unittest.TestCase):
         # Make sure these are test credentials.
         self.secret_key = 'a8f99f40c29cc677d1740c322720aa3d9243c43a'
         # Make sure these are test credentials.
-    def test_get_cost_polaroids_mini(self):
-        template = Template("polaroids_mini", self.public_key, self.secret_key)
-        cost = template.get_cost()
-        self.assertEquals(cost, '4.00')
     def test_get_cost_given_polaroids_mini(self):
         tests = [
             [
@@ -28,8 +24,6 @@ class TestTemplate(unittest.TestCase):
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
             self.assertEquals(cost, tests[1][i])
-    def test_get_cost_polaroids(self):
-        template = Template("polaroids", self.public_key, self.secret_key)
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
     def test_get_cost_given_polaroids(self):
@@ -46,10 +40,8 @@ class TestTemplate(unittest.TestCase):
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
             self.assertEquals(cost, tests[1][i])
-    def test_get_cost_default_postcard(self):
-        template = Template("default_postcard", self.public_key, self.secret_key)
         cost = template.get_cost()
-        self.assertEquals(cost, '1.49')
+        self.assertEquals(cost, '4.00')
     def test_get_cost_given_default_postcard(self):
         tests = [
             [
@@ -60,14 +52,14 @@ class TestTemplate(unittest.TestCase):
                 "Currency is not supported.", '1.49'
                 ]
             ]
-        template = Template("default_postcard", self.public_key, self.secret_key)
+        template = Template(
+            "default_postcard", self.public_key, self.secret_key
+            )
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
             self.assertEquals(cost, tests[1][i])
-    def test_get_cost_magnets(self):
-        template = Template("magnets", self.public_key, self.secret_key)
         cost = template.get_cost()
-        self.assertEquals(cost, '12.50')
+        self.assertEquals(cost, '1.49')
     def test_get_cost_given_magnets(self):
         tests = [
             [
@@ -82,10 +74,8 @@ class TestTemplate(unittest.TestCase):
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
             self.assertEquals(cost, tests[1][i])
-    def test_get_cost_squares(self):
-        template = Template("squares", self.public_key, self.secret_key)
         cost = template.get_cost()
-        self.assertEquals(cost, '4.00')
+        self.assertEquals(cost, '12.50')
     def test_get_cost_given_squares(self):
         tests = [
             [
@@ -100,8 +90,6 @@ class TestTemplate(unittest.TestCase):
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
             self.assertEquals(cost, tests[1][i])
-    def test_get_cost_squares_mini(self):
-        template = Template("squares_mini", self.public_key, self.secret_key)
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
     def test_get_cost_given_squares_mini(self):
@@ -118,6 +106,8 @@ class TestTemplate(unittest.TestCase):
         for i in range(0, len(tests[0])):
             cost = template.get_cost(tests[0][i])
             self.assertEquals(cost, tests[1][i])
+        cost = template.get_cost()
+        self.assertEquals(cost, '4.00')
     
     def test_get_defaults_polaroids_mini(self):
         template = Template("polaroids_mini", self.public_key, self.secret_key)
@@ -153,7 +143,9 @@ class TestTemplate(unittest.TestCase):
             "unit_height": 252.2834645668, "unit_width": 212.598425
             })
     def test_get_defaults_default_postcard(self):
-        template = Template("default_postcard", self.public_key, self.secret_key)
+        template = Template(
+            "default_postcard", self.public_key, self.secret_key
+            )
         defaults = template.get_defaults()
         self.assertEquals(defaults, {
             "colors": [
@@ -427,8 +419,10 @@ class TestTemplate(unittest.TestCase):
 
     def test_to_json(self):
         edit = Template('polaroids_mini', self.public_key, self.secret_key)
-        self.assertEquals(edit.get_overrides(),
-                     'Nothing has been changed. Template "polaroids_mini" is using default settings.')
+        self.assertEquals(edit.get_overrides(), (
+            'Nothing has been changed.' +
+            ' Template "polaroids_mini" is using default settings.'
+            ))
         edit.address_code_index = 21
         edit.border = 12.3454321
         edit.bottom_grip = 30.3464567
