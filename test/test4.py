@@ -1,4 +1,17 @@
-di = {'yes': {'go':'laugh','stay':'ok','put':['the', 'money', 'in', 'the', 'bag']}, 'no': {'go': 'fun','dont go':'yeah','deliver':['cash', 'money', 'millionare']}}
+di = {
+    'yes': {
+        'go':'laugh','stay':'ok',
+        'put':[
+            'the', 'money', 'in', 'the', 'bag'
+            ]
+        },
+    'no': {
+        'go': 'fun','dont go':'yeah',
+        'deliver':[
+            'cash', 'money', 'millionare'
+            ]
+        }
+    }
 
 target = 'go'
 

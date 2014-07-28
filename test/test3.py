@@ -1,4 +1,6 @@
-words = ['oranges', 'apples_bigApples', 'apples_smallApples', 'pears']
+words = [
+    'oranges', 'apples_bigApples', 'apples_smallApples', 'pears'
+    ]
 new_list = []
 for i in range(0, len(words)):
     part_a = ''
