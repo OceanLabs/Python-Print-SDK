@@ -20,6 +20,12 @@ class Template(object):
     # Web address to the json templates.
     
     def __init__(self, template_id, public_key, secret_key):
+        """
+        When starting the module, please give the template id of the
+        template you wish to be working on and your public and secret
+        keys. In order for editing of multiple template simultaniously
+        initiallise multiple instances of the Template module.
+        """
         # __init__ starts the class and loads most varaibles needed in
         # the rest of the program.
         self.passcode = {
@@ -42,8 +48,8 @@ class Template(object):
         
     def get_cost(self, currency=None):
         """
-        Finds the information relating to the cost of the product.
-        Will default to GBP if not specified.
+        Finds the information relating to the cost of the
+        product/template. Will default to GBP if not specified.
         """
         m = self.glob        
         
@@ -68,14 +74,16 @@ class Template(object):
 
     def get_defaults(self):
         """
-        Returns the default data attributed to the template
+        Returns the default data (AKA "content") attributed to the
+        template
         """
         m = self.glob
         return m['content']
 
     def get_overrides(self):
         """
-        This finds the data overrides for a template (if any)
+        This finds the data overrides (AKA "content_overrides") for a
+        template (if any).
         """
         m = self.glob
         if m['content_overrides'] == 'null':
@@ -91,8 +99,8 @@ class Template(object):
 
     def _to_json(self):
         """
-        Updates self.glob with the current state of the template.
-        Does this automatically when you run commit.
+        Updates the overrides with the current state of all variables.
+        Does this automatically when you run commit().
         """
         if self.template_id == 'default_postcard':
             to_be_sent = {
@@ -127,7 +135,7 @@ class Template(object):
     
     def commit(self):
         """
-        Post's the current template in its current state to the server
+        Adds all changes to the overrides of the template.
         """
         self._to_json()
         # Puts the template (assuming it has been edited) back into
@@ -136,9 +144,9 @@ class Template(object):
 
     def _from_json(self, template):
         """
-        Translates mass data sent to the program into single variables
-        with the same name as they were given in the json format.
-        This is run automatically on class initiallation.
+        Translates mass json dictionary into single variables with the
+        same names as they were originally. This is run automatically on
+        class initiallation.
         """
         m = template['content']
         o = template['content_overrides']
