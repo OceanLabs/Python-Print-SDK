@@ -1,15 +1,21 @@
-import requests
-# "Requests" handles all .get and .post requests, blame them if anything
-# goes wrong there.
+"""
+Some top level docstring here
+"""
 
+# Imports generally don't need comments
+# Standard library imports in alphabetical order
 import json
-# Inbuilt python library that kindly translates everything we get and
-# send into and out of json.
-
 import os
 from random import shuffle
 
+# 3rd party imports
+import requests
+
+
 class Template(object):
+    """
+    This class is great!
+    """
     public_key = ''
     # Here is the placeholder variables for the public and secret key's
     # to the server.
@@ -40,31 +46,19 @@ class Template(object):
             currency = self.glob['cost'][i]['currency']
             self.supported_currencies.append(currency)
         
-    def get_cost(self, currency=None):
+    def get_cost(self, currency="GBP"):
         """
         Finds the information relating to the cost of the product.
         Will default to GBP if not specified.
         """
-        m = self.glob        
-        
-        if currency != None:
-            # If they have preferenced a currency...
-            found = False
-            for i in range(0, len(m['cost'])):
-                # ...it begins to look...
-                if currency == m['cost'][i]['currency']:
-                    # ...for the currency which they wanted...
-                    found = True
-                    return m['cost'][i]['amount']
-                    # ...and then shortens the result to just that
-                    # currency.
-            if not found:
-                return "Currency is not supported."
+
+        for cost in self.glob['cost']:
+            if currency == cost['currency']:
+                amount = cost['amount']
+                break
         else:
-            for j in range(0, len(m['cost'])):
-                if m['cost'][j]['currency'] == 'GBP':
-                    return m['cost'][j]['amount']
-            # Otherwise they just get the whole lot.
+            raise ValueError("Currency is not supported.")
+        return amount
 
     def get_defaults(self):
         """
