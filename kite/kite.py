@@ -1,5 +1,11 @@
 """
-Some top level docstring here
+This file contains the class's: 'Template' and 'PrintOrder'. Together
+they allow for intergrated printing and editing of polaroids, pictures,
+and postcards into larger applications. Template is used for the
+importing, reading, editing, and exporting of json templates of
+availible print products. PrintOrder is used for arranging an order for
+a product in a format that the server will accept. It also handles the
+upload of assets to be used in the order.
 """
 
 # Imports generally don't need comments
@@ -14,7 +20,16 @@ import requests
 
 class Template(object):
     """
-    This class is great!
+    This class manages the importing, reading, editing, and exporting of
+    the json templates from the kite.ly templates server. It imports via
+    a HTTPS get call to a json object on the server and exports via a
+    HTTPS put call (with a json payload). It requires the public and
+    private keys that you are presented with after registration on
+    www.kite.ly otherwise you will not be permitted to alter any aspect
+    of the template. To edit the price of a template/product can only be
+    done from your kite account. All changes will first be commited to
+    the "content_overrides" of a template before the server merges it
+    with the "content" section of the template information.
     """
     public_key = ''
     # Here is the placeholder variables for the public and secret key's
