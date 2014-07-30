@@ -157,9 +157,20 @@ class Template(object):
         same names as they were originally. This is run automatically on
         class initiallation.
         """
-        m = template['content']
-        o = template['content_overrides']
-        
+
+        content = template['content']
+
+        # now you don't have to do lots of if statements because content
+        # is a combination of content and overrides
+        # this code first synthesises a dictionary that is essentially
+        # overrides with any keys that aren't in content removed
+        # then updates content with those overrides
+        if not forget_override:
+            content.update({
+                allowed_key: template['content_overrides'][allowed_key]
+                for allowed_key in template['content'].keys() & template['content_overrides'].keys()
+            })
+
         if o == "null":
             forget_override = True
         else:
@@ -172,7 +183,8 @@ class Template(object):
                 self.pages = m['pages']
                 self.paragraph_styles = m['paragraph_styles']
             else:
-                if 'colors' in o.keys():
+                # don't need these branches anymore, but if you did, could omit the .keys()
+                if 'colors' in o:  # iterating over a dictionary returns the keys
                     self.colors = o['colors']
                 else:
                     self.colors = m['colors']
