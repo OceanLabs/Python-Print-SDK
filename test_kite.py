@@ -1,7 +1,7 @@
 import random
 import unittest
 
-from kite import Template
+from kite.kite import Template
 
 class TestTemplate(unittest.TestCase):
 
@@ -13,11 +13,10 @@ class TestTemplate(unittest.TestCase):
     def test_get_cost_given_polaroids_mini(self):
         tests = [
             [
-                'USD', 'EUR', 'GBP', 'JPY', '', None
+                'USD', 'EUR', 'GBP'
                 ],
             [
-                '7.00', '5.00', '4.00', "Currency is not supported.",
-                "Currency is not supported.", '4.00'
+                '7.00', '5.00', '4.00'
                 ]
             ]
         template = Template("polaroids_mini", self.public_key, self.secret_key)
@@ -26,14 +25,19 @@ class TestTemplate(unittest.TestCase):
             self.assertEquals(cost, tests[1][i])
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
+        error_tests = ['JPY', '', None]
+        for test in range(len(error_tests)):
+            with self.assertRaises(ValueError) as attempt:
+                template.get_cost(error_tests[test])
+            error = attempt.exception
+            self.assertEquals(str(error), "Currency is not supported.")
     def test_get_cost_given_polaroids(self):
         tests = [
             [
-                'USD', 'EUR', 'GBP', 'JPY', '', None
+                'USD', 'EUR', 'GBP'
                 ],
             [
-                '7.00', '5.00', '4.00', "Currency is not supported.",
-                "Currency is not supported.", '4.00'
+                '7.00', '5.00', '4.00'
                 ]
             ]
         template = Template("polaroids", self.public_key, self.secret_key)
@@ -42,14 +46,19 @@ class TestTemplate(unittest.TestCase):
             self.assertEquals(cost, tests[1][i])
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
+        error_tests = ['JPY', '', None]
+        for test in range(len(error_tests)):
+            with self.assertRaises(ValueError) as attempt:
+                template.get_cost(error_tests[test])
+            error = attempt.exception
+            self.assertEquals(str(error), "Currency is not supported.")
     def test_get_cost_given_default_postcard(self):
         tests = [
             [
-                'USD', 'EUR', 'GBP', 'JPY', '', None
+                'USD', 'EUR', 'GBP'
                 ],
             [
-                '2.49', '1.99', '1.49', "Currency is not supported.",
-                "Currency is not supported.", '1.49'
+                '2.49', '1.99', '1.49'
                 ]
             ]
         template = Template(
@@ -60,14 +69,19 @@ class TestTemplate(unittest.TestCase):
             self.assertEquals(cost, tests[1][i])
         cost = template.get_cost()
         self.assertEquals(cost, '1.49')
+        error_tests = ['JPY', '', None]
+        for test in range(len(error_tests)):
+            with self.assertRaises(ValueError) as attempt:
+                template.get_cost(error_tests[test])
+            error = attempt.exception
+            self.assertEquals(str(error), "Currency is not supported.")
     def test_get_cost_given_magnets(self):
         tests = [
             [
-                'USD', 'EUR', 'GBP', 'JPY', '', None
+                'USD', 'EUR', 'GBP'
                 ],
             [
-                '14.00', '10.00', '12.50', "Currency is not supported.",
-                "Currency is not supported.", '12.50'
+                '14.00', '10.00', '12.50'
                 ]
             ]
         template = Template("magnets", self.public_key, self.secret_key)
@@ -76,14 +90,19 @@ class TestTemplate(unittest.TestCase):
             self.assertEquals(cost, tests[1][i])
         cost = template.get_cost()
         self.assertEquals(cost, '12.50')
+        error_tests = ['JPY', '', None]
+        for test in range(len(error_tests)):
+            with self.assertRaises(ValueError) as attempt:
+                template.get_cost(error_tests[test])
+            error = attempt.exception
+            self.assertEquals(str(error), "Currency is not supported.")
     def test_get_cost_given_squares(self):
         tests = [
             [
-                'USD', 'EUR', 'GBP', 'JPY', '', None
+                'USD', 'EUR', 'GBP'
                 ],
             [
-                '7.00', '5.00', '4.00', "Currency is not supported.",
-                "Currency is not supported.", '4.00'
+                '7.00', '5.00', '4.00'
                 ]
             ]
         template = Template("squares", self.public_key, self.secret_key)
@@ -92,14 +111,19 @@ class TestTemplate(unittest.TestCase):
             self.assertEquals(cost, tests[1][i])
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
+        error_tests = ['JPY', '', None]
+        for test in range(len(error_tests)):
+            with self.assertRaises(ValueError) as attempt:
+                template.get_cost(error_tests[test])
+            error = attempt.exception
+            self.assertEquals(str(error), "Currency is not supported.")
     def test_get_cost_given_squares_mini(self):
         tests = [
             [
-                'USD', 'EUR', 'GBP', 'JPY', '', None
+                'USD', 'EUR', 'GBP'
                 ],
             [
-                '7.00', '5.00', '4.00', "Currency is not supported.",
-                "Currency is not supported.", '4.00'
+                '7.00', '5.00', '4.00'
                 ]
             ]
         template = Template("squares_mini", self.public_key, self.secret_key)
@@ -108,6 +132,12 @@ class TestTemplate(unittest.TestCase):
             self.assertEquals(cost, tests[1][i])
         cost = template.get_cost()
         self.assertEquals(cost, '4.00')
+        error_tests = ['JPY', '', None]
+        for test in range(len(error_tests)):
+            with self.assertRaises(ValueError) as attempt:
+                template.get_cost(error_tests[test])
+            error = attempt.exception
+            self.assertEquals(str(error), "Currency is not supported.")
     
     def test_get_defaults_polaroids_mini(self):
         template = Template("polaroids_mini", self.public_key, self.secret_key)
