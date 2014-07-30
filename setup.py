@@ -13,7 +13,4 @@ setup(
     description='An API that allows printing polaroids, pictures, and postcards.',
     keywords = ['printing', 'print', 'print API', 'print SDK', 'SDK', 'software development kit'],
     long_description=open('README.txt').read(),
-    install_requires=[
-        "requests == 2.3.0",
-    ],
 )
