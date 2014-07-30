@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     author='Victor Baumbach',
     author_email='baumbach.victor@gmail.com',
-    packages=['kite'],
+    packages=['Python-Print-SDK'],
     scripts=[],
     url='https://github.com/OceanLabs/Python-Print-SDK/tree/master',
     download_url = 'https://github.com/OceanLabs/Python-Print-SDK/tree/master/tarball/0.1.0',
